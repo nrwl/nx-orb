@@ -1,0 +1,25 @@
+description: >
+  You can use the `get-tag` and `set-tag` directly.
+  Use `get-tag` before running your `nx affected...` calls.
+  User `set-tag` as your last step. Set-tag will be skipped unless all of the previous steps were successful
+usage:
+  version: 2.1
+  orbs:
+    nx-tag-successful-ci-run: nrwl/nx-tag-successful-ci-run@1.0.0
+  jobs:
+    build:
+      docker:
+        - image: cimg/node:14.17-browsers
+      steps:
+        - checkout
+        - run:
+            name: Install dependencies
+            command: yarn install --frozen-lockfile
+        - nx-tag-successful-ci-run/set-shas
+        - run:
+            name: Run Builds
+            command: yarn nx affected --target=build --base=$BASE_SHA --parallel --max-parallel=3
+        - run:
+            name: Run Unit Tests
+            command: yarn nx affected --target=test --base=$BASE_SHA --parallel --max-parallel=2
+        - nx-tag-successful-ci-run/tag-successful-ci-run

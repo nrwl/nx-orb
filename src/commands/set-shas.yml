@@ -1,15 +1,36 @@
 description: >
-  This command echos "Hello World" using file inclusion.
-# What will this command do?
-# Descriptions should be short, simple, and clear.
+  Sets the base and head SHAs required for `nx affected` commands in CI
+
 parameters:
-  to:
+  main-branch-name:
     type: string
-    default: "World"
-    description: "Hello to whom?"
+    default: main
+    description: >
+      The "main" branch of your repository (the base branch which you target with PRs).
+      Common names for this branch include main and master.
+  tag-match-pattern:
+    type: string
+    default: nx_successful_ci_run*
+    description: >
+      The glob(7) pattern to be provided to `git describe --tags --match` in order to match against
+      the latest relevant tag on the specified "main" branch.
+      The default pattern aligns with the default behavior of the complementary `tag` command.
+  error-on-no-matching-tags:
+    type: boolean
+    default: false
+    description: >
+      By default, if no matching tags are found on the main branch to determine the SHA,
+      we will log a warning and use HEAD~1. Enable this option to error and exit instead.
 steps:
   - run:
       environment:
-        PARAM_TO: <<parameters.to>>
-      name: Hello Greeting
-      command: <<include(scripts/greet.sh)>>
+        PARAM_MAIN_BRANCH: <<parameters.main-branch-name>>
+        PARAM_TAG_MATCH_PATTERN: <<parameters.tag-match-pattern>>
+        PARAM_ERROR_ON_NO_MATCHING_TAGS: <<parameters.error-on-no-matching-tags>>
+        PARAM_CURRENT_BRANCH: $CIRCLE_BRANCH
+      name: Derive appropriate SHAs for base and head for `nx affected` commands
+      shell: "/bin/bash"
+      command: |
+        <<include(scripts/set-shas.sh)>>
+        echo "export BASE_SHA=\"$BASE_SHA\";" >> $BASH_ENV
+        echo "export HEAD_SHA=\"$HEAD_SHA\";" >> $BASH_ENV
