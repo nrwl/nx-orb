@@ -8,9 +8,6 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 
 > ✨ A CircleCI Orb which includes helpful commands for running Nx commands in the CI
 
-
-
-
 ## Background
 
 When we run `affected` command on [Nx](https://nx.dev/), we can specify 2 git history positions - base and head, and it calculates [which projects in your repository changed
@@ -38,10 +35,6 @@ The commits therefore can't just be `HEAD` and `HEAD~1`. If a few deployments fa
 This action enables you to find:
 * Commit SHA from which PR originated (in the case of `pull_request`)
 * Commit SHA of the last successful CI run
-
-## How to Contribute
-
-We welcome [issues](https://github.com/nrwl/nx-orb/issues) to and [pull requests](https://github.com/nrwl/nx-orb/pulls) against this repository!
 
 ## License
 
