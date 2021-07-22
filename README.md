@@ -6,38 +6,45 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 [![CircleCI Build Status](https://circleci.com/gh/nrwl/nx-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/nrwl/nx-orb) [![CircleCI Orb Version](https://badges.circleci.com/orbs/nrwl/nx.svg)](https://circleci.com/orbs/registry/orb/nrwl/nx) [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/nrwl/nx-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
 
-A starter template for orb projects. Build, test, and publish orbs automatically on CircleCI with [Orb-Tools](https://circleci.com/orbs/registry/orb/circleci/orb-tools).
-
-Additional READMEs are available in each directory.
+> ✨ A CircleCI Orb which includes helpful commands for running Nx commands in the CI
 
 
 
-## Resources
 
-[CircleCI Orb Registry Page](https://circleci.com/orbs/registry/orb/nrwl/nx-orb) - The official registry page of this orb for all versions, executors, commands, and jobs described.
-[CircleCI Orb Docs](https://circleci.com/docs/2.0/orb-intro/#section=configuration) - Docs for using and creating CircleCI Orbs.
+## Background
 
-### How to Contribute
+When we run `affected` command on [Nx](https://nx.dev/), we can specify 2 git history positions - base and head, and it calculates [which projects in your repository changed
+between those 2 commits](https://nx.dev/latest/angular/tutorial/11-test-affected-projects#step-11-test-affected-projects
+). We can then run a set of tasks (like building or linting) only on those **affected** projects.
+
+This makes it easy to set-up a CI system that scales well with the continous growth of your repository, as you add more and more projects.
+
+### Problem
+
+Figuring out what these two git commits are might not be as simple as it seems.
+
+On a CI system that runs on submitted PRs, we determine what commits to include in the **affected** calculation by comparing our `HEAD-commit-of-PR-branch` to the commit in main branch (`master` or `main` usually) from which the PR branch originated. This will ensure the entirety of our PR is always being tested.
+
+But what if we want to set up a continuous deployment system
+that, as changes get pushed to `master`, it builds and deploys
+only the affected projects?
+
+What are the `FROM` and `TO` commits in that case?
+
+Conceptually, what we want is to use the absolute latest commit on the `master` branch as the HEAD, and the previous _successful_ commit on `master` as the BASE. Note, we want the previous _successful_ one because it is still possible for commits on the `master` branch to fail for a variety of reasons.
+
+The commits therefore can't just be `HEAD` and `HEAD~1`. If a few deployments fail one after another, that means that we're accumulating a list of affected projects that are not getting deployed. Anytime we retry the deployment, we want to include **every commit since the last time we deployed successfully**. That way we ensure we don't accidentally skip deploying a project that has changed.
+
+This action enables you to find:
+* Commit SHA from which PR originated (in the case of `pull_request`)
+* Commit SHA of the last successful CI run
+
+## How to Contribute
 
 We welcome [issues](https://github.com/nrwl/nx-orb/issues) to and [pull requests](https://github.com/nrwl/nx-orb/pulls) against this repository!
 
-### How to Publish
-* Create and push a branch with your new features.
-* When ready to publish a new production version, create a Pull Request from _feature branch_ to `master`.
-* The title of the pull request must contain a special semver tag: `[semver:<segment>]` where `<segment>` is replaced by one of the following values.
+## License
 
-| Increment | Description|
-| ----------| -----------|
-| major     | Issue a 1.0.0 incremented release|
-| minor     | Issue a x.1.0 incremented release|
-| patch     | Issue a x.x.1 incremented release|
-| skip      | Do not issue a release|
+[MIT](http://opensource.org/licenses/MIT)
 
-Example: `[semver:major]`
-
-* Squash and merge. Ensure the semver tag is preserved and entered as a part of the commit message.
-* On merge, after manual approval, the orb will automatically be published to the Orb Registry.
-
-
-For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
-
+Copyright (c) 2021-present Narwhal Technologies Inc.

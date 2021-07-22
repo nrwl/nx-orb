@@ -1,11 +1,9 @@
 description: >
-  You can use the `get-tag` and `set-tag` directly.
-  Use `get-tag` before running your `nx affected...` calls.
-  User `set-tag` as your last step. Set-tag will be skipped unless all of the previous steps were successful
+  You can use `set-shas` with all the variables set
 usage:
   version: 2.1
   orbs:
-    nx-tag-successful-ci-run: nrwl/nx-tag-successful-ci-run@1.0.0
+    nx: nrwl/nx@1.0.0
   jobs:
     build:
       docker:
@@ -15,18 +13,12 @@ usage:
         - run:
             name: Install dependencies
             command: yarn install --frozen-lockfile
-        - nx-tag-successful-ci-run/set-shas:
+        - nx/set-shas:
             main-branch-name: "master"
-            # Make sure this tag pattern matches the complementary set-tag
-            tag-match-pattern: "my_custom_tag*"
-            error-on-no-matching-tags: false
+            error-on-no-successful-workflow: true
         - run:
             name: Run Builds
-            command: yarn nx affected --target=build --base=$BASE_SHA
+            command: yarn nx affected --target=build --base=$NX_BASE
         - run:
             name: Run Unit Tests
-            command: yarn nx affected --target=test --base=$BASE_SHA
-        - nx-tag-successful-ci-run/tag-successful-ci-run:
-            # Make sure your each tag is unique. Each run has a unique ${CIRCLE_WORKFLOW_ID}
-            # But you can also use date - $(date +"%Y-%m-%d-%H%M") or something other
-            command_string_to_echo_as_tag_name: "my_custom_tag_${CIRCLE_WORKFLOW_ID}"
+            command: yarn nx affected --target=test --base=$NX_BASE
