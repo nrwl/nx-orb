@@ -21,7 +21,7 @@ steps:
       name: Derives SHAs for base and head for use in `nx affected` commands
       shell: "/bin/bash"
       command: |
-        RESPONSE=$(node ./scripts/find-successful-workflow.js $CIRCLE_BUILD_URL $CIRCLE_BRANCH $PARAM_MAIN_BRANCH $PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW)
+        RESPONSE=$(node <<include(scripts/find-successful-workflow.js)>> $CIRCLE_BUILD_URL $CIRCLE_BRANCH $PARAM_MAIN_BRANCH $PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW)
         echo "$RESPONSE"
         BASE_SHA=$(echo $RESPONSE | grep 'Commit:' text.txt | sed 's/.*Commit: //')
         HEAD_SHA=$(git rev-parse HEAD)
