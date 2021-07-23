@@ -2,44 +2,79 @@
 const { execSync } = require('child_process');
 const https = require('https');
 
-// first two argument params are node and script
-const INPUTS_MAIN_BRANCH_NAME = process.argv[2];
-const PROJECT_SLUG = process.argv[3];
-const URL = `https://circleci.com/api/v2/project/${PROJECT_SLUG}/pipeline?branch=${INPUTS_MAIN_BRANCH_NAME}`;
+const projectSlug = process.argv[2];
+const branchName = process.argv[3];
+const mainBranchName = process.argv[4];
+const errorOnNoSuccessfulWorkflow = process.argv[5];
 
-/**
- * Main run cycle
- */
+let BASE_SHA;
 (async () => {
-  let nextPage;
-  let foundSHA;
+  // If it's PR we want to compare to branch base
+  if (branchName !== mainBranchName) {
+    BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
+  } else {
+    try {
+      BASE_SHA = await findSuccessfulCommit(projectSlug, mainBranchName);
+    } catch (e) {
+      process.stderr.write(e.message);
+      process.exit(1);
+    }
 
-  do {
-    const { next_page_token, sha } = await findSha(nextPage);
-    foundSHA = sha;
-    nextPage = next_page_token;
-  } while (!foundSHA && nextPage);
+    if (!BASE_SHA) {
+      if (errorOnNoSuccessfulWorkflow === 'true') {
+        process.stdout.write(`
+    Unable to find a successful workflow run on 'origin/${mainBranchName}'
+    NOTE: You have set 'error-on-no-successful-workflow' on the action so this is a hard error.
 
-  if (foundSHA) {
-    // send it to parent process
-    process.stdout.write(foundSHA);
+    Is it possible that you have no runs currently on 'origin/${mainBranchName}'?
+    - If yes, then you should run the workflow without this flag first.
+    - If no, then you might have changed your git history and those commits no longer exist.`);
+        process.exit(1);
+      } else {
+        process.stdout.write(`
+WARNING: Unable to find a successful workflow run on 'origin/${mainBranchName}'.
+We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
+
+NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the action in your workflow.\n\n`);
+        BASE_SHA = execSync(`git rev-parse HEAD~1`, { encoding: 'utf-8' });
+      }
+    } else {
+      process.stdout.write(`
+Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
+    }
   }
+
+  process.stdout.write(`Commit: ${BASE_SHA}`);
 })();
 
 /**
  * Finds the last successful commit and or token for the next page
- * @param {string} pageToken
+ * @param {string} project - project path is form of {vsc}/{owner}/{repo}
+ * @param {string} branch - main branch name
  * @returns { next_page_token?: string, sha?: string }
  */
-async function findSha(pageToken) {
-  return getJson(pageToken ? `${URL}&page-token=${pageToken}` : URL)
-    .then(async ({ next_page_token, items }) => {
-      const pipeline = await findSuccessfulPipeline(items);
-      return {
-        next_page_token,
-        sha: pipeline ? pipeline.vcs.revision : void 0
-      };
-    });
+async function findSuccessfulCommit(project, branch) {
+  const url = `https://circleci.com/api/v2/project/${project}/pipeline?branch=${branch}`;
+
+  let nextPage;
+  let foundSHA;
+
+  do {
+    const fullUrl = nextPage ? `${url}&page-token=${nextPage}` : url;
+    const { next_page_token, sha } = await getJson(fullUrl)
+      .then(async ({ next_page_token, items }) => {
+        const pipeline = await findSuccessfulPipeline(items);
+        return {
+          next_page_token,
+          sha: pipeline ? pipeline.vcs.revision : void 0
+        };
+      });
+
+    foundSHA = sha;
+    nextPage = next_page_token;
+  } while (!foundSHA && nextPage);
+
+  return foundSHA;
 }
 
 /**

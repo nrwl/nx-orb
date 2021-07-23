@@ -18,10 +18,12 @@ steps:
       environment:
         PARAM_MAIN_BRANCH: <<parameters.main-branch-name>>
         PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW: <<parameters.error-on-no-successful-workflow>>
-        PARAM_CURRENT_BRANCH: $CIRCLE_BRANCH
       name: Derives SHAs for base and head for use in `nx affected` commands
       shell: "/bin/bash"
       command: |
-        <<include(scripts/set-shas.sh)>>
+        RESPONSE=$(node ./scripts/find-successful-workflow.js << pipeline.project.type >>/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME $PARAM_CURRENT_BRANCH PARAM_MAIN_BRANCH PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW)
+        echo "$RESPONSE"
+        BASE_SHA=$(echo $RESPONSE | grep 'Commit:' text.txt | sed 's/.*Commit: //')
+        HEAD_SHA=$(git rev-parse HEAD)
         echo "export NX_BASE=\"$BASE_SHA\";" >> $BASH_ENV
         echo "export NX_HEAD=\"$HEAD_SHA\";" >> $BASH_ENV
