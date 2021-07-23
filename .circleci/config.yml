@@ -19,7 +19,7 @@ parameters:
 jobs:
   set-shas-integration-test:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:14.17
     steps:
       - checkout
       - nx/set-shas
