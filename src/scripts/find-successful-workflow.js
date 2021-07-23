@@ -9,7 +9,6 @@ const errorOnNoSuccessfulWorkflow = process.argv[5];
 
 let BASE_SHA;
 (async () => {
-  // If it's PR we want to compare to branch base
   if (branchName !== mainBranchName) {
     BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
   } else {
@@ -44,15 +43,9 @@ Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
     }
   }
 
-  process.stdout.write(`Commit: ${BASE_SHA}`);
+  process.stdout.write(`Commit: ${BASE_SHA}\n`);
 })();
 
-/**
- * Finds the last successful commit and or token for the next page
- * @param {string} project - project path is form of {vsc}/{owner}/{repo}
- * @param {string} branch - main branch name
- * @returns { next_page_token?: string, sha?: string }
- */
 async function findSuccessfulCommit(buildUrl, branch) {
   const project = buildUrl.match(/https:\/\/circleci.com\/(.*)\/\d./)[1];
   const url = `https://circleci.com/api/v2/project/${project}/pipeline?branch=${branch}`;
@@ -78,11 +71,6 @@ async function findSuccessfulCommit(buildUrl, branch) {
   return foundSHA;
 }
 
-/**
- * Get first successful pipeline if any exists
- * @param {Object[]} pipelines
- * @returns
- */
 async function findSuccessfulPipeline(pipelines) {
   for (const pipeline of pipelines) {
     if (!pipeline.errors.length
@@ -94,11 +82,6 @@ async function findSuccessfulPipeline(pipelines) {
   return undefined;
 }
 
-/**
- * Check if given commit is valid
- * @param {string} commitSha
- * @returns
- */
 function commitExists(commitSha) {
   try {
     execSync(`git cat-file -e ${commitSha} 2> /dev/null`);
@@ -108,21 +91,11 @@ function commitExists(commitSha) {
   }
 }
 
-/**
- *
- * @param {string} pipelineId
- * @returns {boolean}
- */
 async function isWorkflowSuccessful(pipelineId) {
   return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
     .then(({ items }) => items.every(item => item.status === 'success'));
 }
 
-/**
- * Helper function to wrap Https.get as an async call
- * @param {string} url
- * @returns {Promise<JSON>}
- */
 async function getJson(url) {
   return new Promise((resolve, reject) => {
     https.get(url, res => {
