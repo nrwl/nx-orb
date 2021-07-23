@@ -24,7 +24,7 @@ let BASE_SHA;
       if (errorOnNoSuccessfulWorkflow === 'true') {
         process.stdout.write(`
     Unable to find a successful workflow run on 'origin/${mainBranchName}'
-    NOTE: You have set 'error-on-no-successful-workflow' on the action so this is a hard error.
+    NOTE: You have set 'error-on-no-successful-workflow' on the step so this is a hard error.
 
     Is it possible that you have no runs currently on 'origin/${mainBranchName}'?
     - If yes, then you should run the workflow without this flag first.
@@ -35,7 +35,7 @@ let BASE_SHA;
 WARNING: Unable to find a successful workflow run on 'origin/${mainBranchName}'.
 We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
 
-NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the action in your workflow.\n\n`);
+NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
         BASE_SHA = execSync(`git rev-parse HEAD~1`, { encoding: 'utf-8' });
       }
     } else {

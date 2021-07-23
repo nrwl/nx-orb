@@ -1,5 +1,5 @@
 description: >
-  You can use `set-shas` with default values
+  You can use `set-shas` without parameters using the default values provided. Check API for more information.
 usage:
   version: 2.1
   orbs:

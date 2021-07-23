@@ -1,5 +1,7 @@
 description: >
-  You can use `set-shas` with all the variables set
+  You need to specify `main-branch-name` if different than `main`.
+  If last successful workflow run was not found, by default we report warning and fallback to HEAD~1.
+  You can instead make this a hard error by settting 'error-on-no-successful-workflow' to true.
 usage:
   version: 2.1
   orbs:
