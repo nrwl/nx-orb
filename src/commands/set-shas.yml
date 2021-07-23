@@ -1,15 +1,39 @@
 description: >
-  This command echos "Hello World" using file inclusion.
-# What will this command do?
-# Descriptions should be short, simple, and clear.
+  Derives SHAs for base and head for use in `nx affected` commands in CI
+
 parameters:
-  to:
+  main-branch-name:
     type: string
-    default: "World"
-    description: "Hello to whom?"
+    default: "main"
+    description: |
+      The name of the main branch in your repo, used as the target of PRs. E.g. main, master etc.
+  error-on-no-successful-workflow:
+    type: boolean
+    default: false
+    description: |
+      By default, if no successful workflow is found on the main branch to determine the SHA,
+      we will log a warning and use HEAD~1. Enable this option to error and exit instead.
 steps:
   - run:
       environment:
-        PARAM_TO: <<parameters.to>>
-      name: Hello Greeting
-      command: <<include(scripts/greet.sh)>>
+        PARAM_MAIN_BRANCH: <<parameters.main-branch-name>>
+        PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW: <<parameters.error-on-no-successful-workflow>>
+        PARAM_SCRIPT: <<include(scripts/find-successful-workflow.js)>>
+      name: Derives SHAs for base and head for use in `nx affected` commands
+      shell: "/bin/bash"
+      command: |
+        echo "$PARAM_SCRIPT" >> "index.js"
+        RESPONSE=$(node index.js $CIRCLE_BUILD_URL $CIRCLE_BRANCH $PARAM_MAIN_BRANCH $PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW)
+        echo "$RESPONSE"
+        BASE_SHA=$(echo "$RESPONSE" | grep 'Commit:' | sed 's/.*Commit: //')
+        HEAD_SHA=$(git rev-parse HEAD)
+        echo "Base SHA"
+        echo $BASE_SHA
+        echo ""
+        echo "Head SHA"
+        echo $HEAD_SHA
+        echo ""
+        echo "export NX_BASE=\"$BASE_SHA\";" >> $BASH_ENV
+        echo "export NX_HEAD=\"$HEAD_SHA\";" >> $BASH_ENV
+        echo ""
+        echo "NX_BASE and NX_HEAD environment variables have been set for the current Job"
