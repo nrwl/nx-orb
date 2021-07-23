@@ -25,5 +25,13 @@ steps:
         echo "$RESPONSE"
         BASE_SHA=$(echo $RESPONSE | grep 'Commit:' text.txt | sed 's/.*Commit: //')
         HEAD_SHA=$(git rev-parse HEAD)
+        echo "Base SHA"
+        echo $NX_BASE
+        echo ""
+        echo "Head SHA"
+        echo $NX_HEAD
+        echo ""
         echo "export NX_BASE=\"$BASE_SHA\";" >> $BASH_ENV
         echo "export NX_HEAD=\"$HEAD_SHA\";" >> $BASH_ENV
+        echo ""
+        echo "NX_BASE and NX_HEAD environment variables have been set for the current Job"
