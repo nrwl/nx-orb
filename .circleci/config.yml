@@ -31,17 +31,13 @@ workflows:
       - orb-tools/lint
       - orb-tools/pack:
           use-orb-pack: true
-      - hold-for-dev-publish:
-          type: approval
-          requires:
-            - orb-tools/lint
-            - orb-tools/pack
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
           orb-name: nrwl/nx
           context: orb-publishing # A restricted context containing your private publishing credentials. Will only execute if approved by an authorized user.
           requires:
-            - hold-for-dev-publish
+            - orb-tools/lint
+            - orb-tools/pack
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:

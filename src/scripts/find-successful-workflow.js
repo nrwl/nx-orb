@@ -2,7 +2,7 @@
 const { execSync } = require('child_process');
 const https = require('https');
 
-const projectSlug = process.argv[2];
+const buildUrl = process.argv[2];
 const branchName = process.argv[3];
 const mainBranchName = process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5];
@@ -14,7 +14,7 @@ let BASE_SHA;
     BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
   } else {
     try {
-      BASE_SHA = await findSuccessfulCommit(projectSlug, mainBranchName);
+      BASE_SHA = await findSuccessfulCommit(buildUrl, mainBranchName);
     } catch (e) {
       process.stderr.write(e.message);
       process.exit(1);
@@ -53,7 +53,8 @@ Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
  * @param {string} branch - main branch name
  * @returns { next_page_token?: string, sha?: string }
  */
-async function findSuccessfulCommit(project, branch) {
+async function findSuccessfulCommit(buildUrl, branch) {
+  const project = buildUrl.match(/https:\/\/circleci.com\/(.*)\/\d./)[1];
   const url = `https://circleci.com/api/v2/project/${project}/pipeline?branch=${branch}`;
 
   let nextPage;
