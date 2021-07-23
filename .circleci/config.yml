@@ -67,7 +67,6 @@ workflows:
           add-pr-comment: true
           fail-if-semver-not-indicated: true
           publish-version-tag: true
-          ssh-fingerprints: a8:c8:a9:2e:56:0a:cf:33:3a:f9:30:bf:ca:5a:29:cf
           requires:
             - set-shas-integration-test
           filters:
