@@ -8,6 +8,32 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 
 > ✨ A CircleCI Orb which includes helpful commands for running Nx commands in the CI
 
+## Usage
+
+```yaml
+version: 2.1
+
+orbs:
+  nx: nrwl/nx@1.0.0
+
+jobs:
+  checks:
+    docker:
+      - image: cimg/node:14.17-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+      - nx/set-shas
+      - run:
+          name: Run Builds
+          command: yarn nx affected --target=build --base=$NX_BASE --parallel
+      - run:
+          name: Run Unit Tests
+          command: yarn nx affected --target=test --base=$NX_BASE --parallel
+```
+
 ## Background
 
 When we run `affected` command on [Nx](https://nx.dev/), we can specify 2 git history positions - base and head, and it calculates [which projects in your repository changed
