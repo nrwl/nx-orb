@@ -6,6 +6,7 @@ const buildUrl = process.argv[2];
 const branchName = process.argv[3];
 const mainBranchName = process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5];
+const circleToken = process.env.CIRCLE_API_TOKEN;
 
 let BASE_SHA;
 (async () => {
@@ -98,7 +99,15 @@ async function isWorkflowSuccessful(pipelineId) {
 
 async function getJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, res => {
+    let options = {};
+
+    if (circleToken) {
+      options.headers = {
+        'Circle-Token': circleToken
+      }
+    }
+
+    https.get(url, options, (res) => {
       let data = [];
 
       res.on('data', chunk => {

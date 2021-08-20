@@ -21,6 +21,12 @@ Within the `@orb.yml` we generally specify 4 configuration keys
 4. **orbs**
     (optional) Some orbs may depend on other orbs. Import them here.
 
+## Private repositories
+
+To use this orb with a private repository create a Circle CI API token
+and add the value as an environment variable called `CIRCLE_API_TOKEN` in
+a context or the project environment variables.
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [Reusable Configuration](https://circleci.com/docs/2.0/reusing-config)
