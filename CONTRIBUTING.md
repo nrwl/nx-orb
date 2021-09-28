@@ -59,3 +59,9 @@ Add workflow-id to filter successful workflows
 
 Closes #157
 ```
+
+### Publishing
+
+```
+circleci orb publish promote nrwl/nx@dev:main minor
+```
