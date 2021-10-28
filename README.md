@@ -62,6 +62,10 @@ This action enables you to find:
 * Commit SHA from which PR originated (in the case of `pull_request`)
 * Commit SHA of the last successful CI run
 
+## Private repositories
+
+To use this orb with a private repository on your main branch, you need to grant the orb access to your CircleCI API. You can do this by creating an environment variable called `CIRCLE_API_TOKEN` in the context or the project.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
