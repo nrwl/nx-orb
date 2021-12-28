@@ -14,7 +14,7 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 version: 2.1
 
 orbs:
-  nx: nrwl/nx@1.1.2
+  nx: nrwl/nx@1.1.3
 
 jobs:
   checks:
@@ -65,6 +65,8 @@ This action enables you to find:
 ## Private repositories
 
 To use this orb with a private repository on your main branch, you need to grant the orb access to your CircleCI API. You can do this by creating an environment variable called `CIRCLE_API_TOKEN` in the context or the project.
+
+> Note: It should be a user token, not project token.
 
 ## License
 
