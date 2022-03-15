@@ -21,12 +21,6 @@ Within the `@orb.yml` we generally specify 4 configuration keys
 4. **orbs**
     (optional) Some orbs may depend on other orbs. Import them here.
 
-## Private repositories
-
-To use this orb with a private repository on your main branch, you need to grant the orb access to your CircleCI API. You can do this by creating an environment variable called `CIRCLE_API_TOKEN` in the context or the project.
-
-> Note: It should be a user token, not project token.
-
 ## See:
 
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
