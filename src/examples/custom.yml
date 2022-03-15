@@ -2,7 +2,7 @@ description: >
   You need to specify `main-branch-name` if different than `main`.
   If last successful workflow run was not found, by default we report warning and fallback to HEAD~1.
   You can instead make this a hard error by settting 'error-on-no-successful-workflow' to true.
-  If you need to find a successful workflow with a specific name, set the value of 'workflow-name'.
+  If you need to find the last successful job within a specific workflow, set the value of 'workflow-name'.
 usage:
   version: 2.1
   orbs:
