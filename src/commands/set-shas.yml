@@ -17,8 +17,8 @@ parameters:
     type: string
     default: ""
     description: |
-      By default, the script is looking for the last successful job. This param, make script to look
-      for a job with a successful specific workflow. Empty value makes the script behave in the old way.
+      By default, the script is looking for the last successful job accross all workflows. 
+      Set this param to search for the last successful job within a specific workflow.
 
 steps:
   - run:
