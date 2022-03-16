@@ -6,7 +6,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    nx: nrwl/nx@1.1.4
+    nx: nrwl/nx@1.2.0
   jobs:
     build:
       docker:
@@ -19,7 +19,7 @@ usage:
         - nx/set-shas:
             main-branch-name: "master"
             error-on-no-successful-workflow: true
-            workflow: "nx-pipeline"
+            workflow-name: "nx-pipeline"
         - run:
             name: Run Builds
             command: yarn nx affected --target=build --base=$NX_BASE
