@@ -93,18 +93,12 @@ function commitExists(commitSha) {
 }
 
 async function isWorkflowSuccessful(pipelineId, workflowName) {
-  if (!workflowName || workflowName.length === 0) {
+  if (!workflowName) {
     return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
       .then(({ items }) => items.every(item => item.status === 'success'));
   } else {
-    return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`).then(
-      function(items){
-        return items.items.some(
-          function(item) {
-            return (item.name === workflowName && item.status === 'success')
-          }
-        )
-      });
+    return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
+      .then(({ items }) => items.some(item => item.status === 'success' && item.name === workflowName));
   }
 }
 

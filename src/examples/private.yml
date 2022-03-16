@@ -1,6 +1,7 @@
 description: >
-  To use this orb with a private repository on your main branch, you need to grant the orb access to your CircleCI API. You can do this by creating an environment variable called `CIRCLE_API_TOKEN` in the context or the project.
-  Notice how the steps are exactly same as the default one. The remaining usage code is intentionally omitted, since it does not differ from the normal usage.
+  To use this orb with a private repository on your main branch, you need to grant the orb access to your CircleCI API.
+  You can do this by creating an environment variable called `CIRCLE_API_TOKEN` in the context or the project.
+  The remaining usage code is intentionally omitted, since it does not differ from the normal usage.
 
   Note: It should be a user token, not project token.
 usage:
