@@ -13,17 +13,25 @@ parameters:
     description: |
       By default, if no successful workflow is found on the main branch to determine the SHA,
       we will log a warning and use HEAD~1. Enable this option to error and exit instead.
+  workflow-name:
+    type: string
+    default: ""
+    description: |
+      By default, the script is looking for the last successful job accross all workflows. 
+      Set this param to search for the last successful job within a specific workflow.
+
 steps:
   - run:
       environment:
         PARAM_MAIN_BRANCH: <<parameters.main-branch-name>>
         PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW: <<parameters.error-on-no-successful-workflow>>
+        PARAM_WORKFLOW_NAME: <<parameters.workflow-name>>
         PARAM_SCRIPT: <<include(scripts/find-successful-workflow.js)>>
       name: Derives SHAs for base and head for use in `nx affected` commands
       shell: "/bin/bash"
       command: |
         echo "$PARAM_SCRIPT" >> "index.js"
-        RESPONSE=$(node index.js $CIRCLE_BUILD_URL $CIRCLE_BRANCH $PARAM_MAIN_BRANCH $PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW)
+        RESPONSE=$(node index.js $CIRCLE_BUILD_URL $CIRCLE_BRANCH $PARAM_MAIN_BRANCH $PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW $PARAM_WORKFLOW_NAME)
         echo "$RESPONSE"
         BASE_SHA=$(echo "$RESPONSE" | grep 'Commit:' | sed 's/.*Commit: //')
         HEAD_SHA=$(git rev-parse HEAD)
