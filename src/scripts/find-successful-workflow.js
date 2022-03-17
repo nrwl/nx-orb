@@ -123,6 +123,10 @@ async function getJson(url) {
         const response = Buffer.concat(data).toString();
         resolve(JSON.parse(response));
       });
-    }).on('error', error => reject(error));
+    }).on('error', error => reject(
+      circleToken
+        ? new Error(`Error: Pipeline fetching failed.\nCheck if you set the correct user CIRCLE_API_TOKEN.\n\n${error.toString()}`)
+        : new Error(`Error: Pipeline fetching failed.\nIf this is private repo you will need to set CIRCLE_API_TOKEN\n\n${error.toString()}`)
+    ));
   });
 }
