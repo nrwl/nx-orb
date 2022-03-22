@@ -4,7 +4,7 @@ const https = require('https');
 
 const buildUrl = process.argv[2];
 const branchName = process.argv[3];
-const mainBranchName = process.env.NX_MAIN_BRANCH_NAME || process.argv[4];
+const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5];
 const workflowName = process.argv[6];
 const circleToken = process.env.CIRCLE_API_TOKEN;
