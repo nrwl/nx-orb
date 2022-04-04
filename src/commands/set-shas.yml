@@ -17,8 +17,14 @@ parameters:
     type: string
     default: ""
     description: |
-      By default, the script is looking for the last successful job accross all workflows.
+      By default, the script is looking for the last successful job across all workflows.
       Set this param to search for the last successful job within a specific workflow.
+  allow-on-hold-workflow:
+    type: boolean
+    default: false
+    description: |
+      By default, only workflows with CircleCI status of "success" will be detected for the main branch.
+      Enable this option to also detect workflows with CircleCI status of "on_hold" in case your workflow requires manual approvals.
 
 steps:
   - run:

@@ -22,6 +22,7 @@ usage:
             main-branch-name: "master" # you can also use the environment variable MAIN_BRANCH_NAME for this purpose
             error-on-no-successful-workflow: true
             workflow-name: "nx-pipeline"
+            allow-on-hold-workflow: true
         - run:
             name: Run Builds
             command: yarn nx affected --target=build --base=$NX_BASE

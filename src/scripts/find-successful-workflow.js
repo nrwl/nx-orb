@@ -7,6 +7,7 @@ const branchName = process.argv[3];
 const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5];
 const workflowName = process.argv[6];
+const allowOnHoldWorkflow = process.argv[7];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
 let BASE_SHA;
@@ -95,10 +96,10 @@ function commitExists(commitSha) {
 async function isWorkflowSuccessful(pipelineId, workflowName) {
   if (!workflowName) {
     return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.every(item => item.status === 'success'));
+      .then(({ items }) => items.every(item => (item.status === 'success') || (allowOnHoldWorkflow === 'true' && item.status === 'on_hold')));
   } else {
     return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.some(item => item.status === 'success' && item.name === workflowName));
+      .then(({ items }) => items.some(item => ((item.status === 'success') || (allowOnHoldWorkflow === 'true' && item.status === 'on_hold')) && item.name === workflowName));
   }
 }
 
