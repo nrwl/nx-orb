@@ -14,12 +14,12 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 version: 2.1
 
 orbs:
-  nx: nrwl/nx@1.2.0
+  nx: nrwl/nx@1.4.0
 
 jobs:
   checks:
     docker:
-      - image: cimg/node:14.17-browsers
+      - image: cimg/node:lts-browsers
     steps:
       - checkout
       - run:

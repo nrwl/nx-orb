@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- ## [Unreleased]
  - Current development changes [ to be moved to release ] -->
 
+## [1.4.0] - 2022-04-05
+### Added
+ - **[feat]**: Add support for `on-hold` workflows
+
+## [1.3.0] - 2022-03-24
+### Added
+ - **[feat]**: Add main branch name environment variable support
+
 ## [1.2.2] - 2022-03-17
 ### Added
  - **[fix]**: Improve error message on missing or invalid private token
