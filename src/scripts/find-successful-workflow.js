@@ -6,8 +6,8 @@ const buildUrl = process.argv[2];
 const branchName = process.argv[3];
 const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5];
-const workflowName = process.argv[6];
-const allowOnHoldWorkflow = process.argv[7];
+const allowOnHoldWorkflow = process.argv[6];
+const workflowName = process.argv[7];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
 let BASE_SHA;
