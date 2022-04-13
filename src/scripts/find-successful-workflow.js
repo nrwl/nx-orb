@@ -96,10 +96,10 @@ function commitExists(commitSha) {
 async function isWorkflowSuccessful(pipelineId, workflowName) {
   if (!workflowName) {
     return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.every(item => (item.status === 'success') || (allowOnHoldWorkflow === 'true' && item.status === 'on_hold')));
+      .then(({ items }) => items.every(item => (item.status === 'success') || (allowOnHoldWorkflow === '1' && item.status === 'on_hold')));
   } else {
     return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.some(item => ((item.status === 'success') || (allowOnHoldWorkflow === 'true' && item.status === 'on_hold')) && item.name === workflowName));
+      .then(({ items }) => items.some(item => ((item.status === 'success') || (allowOnHoldWorkflow === '1' && item.status === 'on_hold')) && item.name === workflowName));
   }
 }
 
