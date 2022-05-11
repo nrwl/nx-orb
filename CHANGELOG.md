@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- ## [Unreleased]
  - Current development changes [ to be moved to release ] -->
 
+## [1.4.1] - 2022-05-11
+ - **[fix]**: Fix handling of boolean parameters
+
 ## [1.4.0] - 2022-04-05
 ### Added
  - **[feat]**: Add support for `on-hold` workflows
