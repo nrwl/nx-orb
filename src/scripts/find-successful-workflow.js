@@ -10,6 +10,10 @@ const allowOnHoldWorkflow = process.argv[6];
 const workflowName = process.argv[7];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
+process.stdout.write(`TESTING PARAMS: \n\n`);
+process.stdout.write(` - errorOnNoSuccessfulWorkflow: ${errorOnNoSuccessfulWorkflow === '0'}\n`);
+process.stdout.write(` - allowOnHoldWorkflow: ${allowOnHoldWorkflow === '0'}\n`);
+
 let BASE_SHA;
 (async () => {
   if (branchName !== mainBranchName) {
@@ -23,7 +27,7 @@ let BASE_SHA;
     }
 
     if (!BASE_SHA) {
-      if (errorOnNoSuccessfulWorkflow === 'true') {
+      if (errorOnNoSuccessfulWorkflow === '1') {
         process.stdout.write(`
     Unable to find a successful workflow run on 'origin/${mainBranchName}'
     NOTE: You have set 'error-on-no-successful-workflow' on the step so this is a hard error.
