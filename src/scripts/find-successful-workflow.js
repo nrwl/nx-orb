@@ -10,7 +10,7 @@ const allowOnHoldWorkflow = process.argv[6] === '1';
 const workflowName = process.argv[7];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
-const [, host, project] = buildUrl.match(/https:\/\/([^/]+)\/(.*)\/\d./);
+const [, host, project] = buildUrl.match(/https?:\/\/([^\/]+)\/(.*)\/\d./);
 
 let BASE_SHA;
 (async () => {
