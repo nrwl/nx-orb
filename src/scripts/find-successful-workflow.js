@@ -50,7 +50,7 @@ Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
 })();
 
 async function findSuccessfulCommit(buildUrl, branch, workflowName) {
-  const project = buildUrl.match(/https:\/\/circleci.com\/(.*)\/\d./)[1];
+  const project = buildUrl.match(/https:\/\/circleci.com\/(.*)\/\d*/)[1];
   const url = `https://circleci.com/api/v2/project/${project}/pipeline?branch=${branch}`;
   let nextPage;
   let foundSHA;
