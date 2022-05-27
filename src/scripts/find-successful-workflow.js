@@ -10,13 +10,15 @@ const allowOnHoldWorkflow = process.argv[6] === '1';
 const workflowName = process.argv[7];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
+const [, host, project] = buildUrl.match(/https?:\/\/([^\/]+)\/(.*)\/\d./);
+
 let BASE_SHA;
 (async () => {
   if (branchName !== mainBranchName) {
     BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
   } else {
     try {
-      BASE_SHA = await findSuccessfulCommit(buildUrl, mainBranchName, workflowName);
+      BASE_SHA = await findSuccessfulCommit(mainBranchName, workflowName);
     } catch (e) {
       process.stderr.write(e.message);
       process.exit(1);
@@ -49,9 +51,8 @@ Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
   process.stdout.write(`Commit: ${BASE_SHA}\n`);
 })();
 
-async function findSuccessfulCommit(buildUrl, branch, workflowName) {
-  const project = buildUrl.match(/https:\/\/circleci.com\/(.*)\/\d*/)[1];
-  const url = `https://circleci.com/api/v2/project/${project}/pipeline?branch=${branch}`;
+async function findSuccessfulCommit(branch, workflowName) {
+  const url = `https://${host}/api/v2/project/${project}/pipeline?branch=${branch}`;
   let nextPage;
   let foundSHA;
 
@@ -95,10 +96,10 @@ function commitExists(commitSha) {
 
 async function isWorkflowSuccessful(pipelineId, workflowName) {
   if (!workflowName) {
-    return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
+    return getJson(`https://${host}/api/v2/pipeline/${pipelineId}/workflow`)
       .then(({ items }) => items.every(item => (item.status === 'success') || (allowOnHoldWorkflow && item.status === 'on_hold')));
   } else {
-    return getJson(`https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`)
+    return getJson(`https://${host}/api/v2/pipeline/${pipelineId}/workflow`)
       .then(({ items }) => items.some(item => ((item.status === 'success') || (allowOnHoldWorkflow && item.status === 'on_hold')) && item.name === workflowName));
   }
 }
