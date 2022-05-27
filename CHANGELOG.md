@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- ## [Unreleased]
  - Current development changes [ to be moved to release ] -->
 
+## [1.5.0] - 2022-05-27
+ - **[feat]**: Support CircleCI Enterprise setups
+
 ## [1.4.1] - 2022-05-11
  - **[fix]**: Fix handling of boolean parameters
 
