@@ -1,75 +1,36 @@
 version: 2.1
-
+setup: true
 orbs:
-  nx: nrwl/nx@<<pipeline.parameters.dev-orb-version>>
-  orb-tools: circleci/orb-tools@10.0
+  orb-tools: circleci/orb-tools@11.1
+  shellcheck: circleci/shellcheck@3.1
 
-# Pipeline Parameters
-## These parameters are used internally by orb-tools. Skip to the Jobs section.
-parameters:
-  # These pipeline parameters are required by the "trigger-integration-tests-workflow"
-  # job, by default.
-  run-integration-tests:
-    type: boolean
-    default: false
-  dev-orb-version:
-    type: string
-    default: "dev:alpha"
-
-jobs:
-  set-shas-integration-test:
-    docker:
-      - image: cimg/node:14.17
-    steps:
-      - checkout
-      - nx/set-shas
+filters: &filters
+  tags:
+    only: /.*/
 
 workflows:
-  test-pack:
-    unless: << pipeline.parameters.run-integration-tests >>
+  lint-pack:
     jobs:
-      - orb-tools/lint
+      - orb-tools/lint:
+          filters: *filters
       - orb-tools/pack:
-          use-orb-pack: true
-      # Publish development version(s) of the orb.
-      - orb-tools/publish-dev:
+          filters: *filters
+      - orb-tools/review:
+          filters: *filters
+      - shellcheck/check:
+          exclude: SC2148,SC2038,SC2086,SC2002,SC2016
+          filters: *filters
+      - orb-tools/publish:
           orb-name: nrwl/nx
-          context: orb-publishing # A restricted context containing your private publishing credentials. Will only execute if approved by an authorized user.
+          vcs-type: << pipeline.project.type >>
           requires:
-            - orb-tools/lint
-            - orb-tools/pack
-      # Trigger an integration workflow to test the
-      # dev:${CIRCLE_SHA1:0:7} version of your orb
-      - orb-tools/trigger-integration-tests-workflow:
-          name: trigger-integration-dev
+            [orb-tools/lint, orb-tools/review, orb-tools/pack, shellcheck/check]
+          # Use a context to hold your publishing token.
           context: orb-publishing
-          requires:
-            - orb-tools/publish-dev
-
-  # This `integration-test_deploy` workflow will only run
-  # when the run-integration-tests pipeline parameter is set to true.
-  # It is meant to be triggered by the "trigger-integration-tests-workflow"
-  # job, and run tests on <your orb>@dev:${CIRCLE_SHA1:0:7}.
-  integration-test_deploy:
-    when: << pipeline.parameters.run-integration-tests >>
-    jobs:
-      # Run any integration tests defined within the `jobs` key.
-      - set-shas-integration-test
-      # Publish a semver version of the orb. relies on
-      # the commit subject containing the text "[semver:patch|minor|major|skip]"
-      # as that will determine whether a patch, minor or major
-      # version will be published or if publishing should
-      # be skipped.
-      # e.g. [semver:patch] will cause a patch version to be published.
-      - orb-tools/dev-promote-prod-from-commit-subject:
-          orb-name: nrwl/nx
-          context: orb-publishing
-          add-pr-comment: true
-          fail-if-semver-not-indicated: true
-          publish-version-tag: false
-          requires:
-            - set-shas-integration-test
-          filters:
-            branches:
-              only:
-                - main
+          filters: *filters
+      # Triggers the next workflow in the Orb Development Kit.
+      - orb-tools/continue:
+          pipeline-number: << pipeline.number >>
+          vcs-type: << pipeline.project.type >>
+          requires: [orb-tools/publish]
+          filters: *filters
