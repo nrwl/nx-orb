@@ -14,23 +14,10 @@ We welcome [issues](https://github.com/nrwl/nx-orb/issues) to and [pull requests
 The commit message should follow the following format:
 
 ```
-[semver:<segment>] type: subject
+type: subject
 BLANK LINE
 body
 ```
-
-##### Semver tag
-
-The title of the pull request must contain a special semver tag: `[semver:<segment>]` where `<segment>` is replaced by one of the following values.
-
-| Increment | Description|
-| ----------| -----------|
-| major     | Issue a 1.0.0 incremented release|
-| minor     | Issue a x.1.0 incremented release|
-| patch     | Issue a x.x.1 incremented release|
-| skip      | Do not issue a release|
-
-Example: `[semver:major]`
 
 ##### Type
 
@@ -53,7 +40,7 @@ Including the issue number that the PR relates to also helps with tracking.
 ##### Example
 
 ```
-[semver:minor] feat(set-shas): add optinal workflow-id
+feat(set-shas): add optinal workflow-id
 
 Add workflow-id to filter successful workflows
 
@@ -62,6 +49,17 @@ Closes #157
 
 ### Publishing
 
+
+#### Test the PR
+As a contributor, inspect the PR. When you are satisfied, run the following command to pull in the changes to allow the CI job to run.
+
 ```
-circleci orb publish promote nrwl/nx@dev:main minor
+gh pr checkout <issue-number>
+git push origin HEAD
 ```
+#### Publish
+1. Draft a new [Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository#creating-a-release)
+2. Temporarily set a tag for the release. ex: `v1.2.3`
+3. Click the `+auto-generate` notes button
+4. Review the commits added to the release. Use conventional-commits to determine if the tag selected is appropriate for the changes included, and adjust the tag version number if needed.
+5. Publish the release. The new tag will trigger a CI deployment job.
