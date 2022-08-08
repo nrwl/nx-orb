@@ -36,4 +36,4 @@ steps:
         PARAM_SCRIPT: <<include(scripts/find-successful-workflow.js)>>
       name: Derives SHAs for base and head for use in `nx affected` commands
       shell: "/bin/bash"
-      command: <<include(scripts/set-shas.yml)>>
+      command: <<include(scripts/set-shas.sh)>>
