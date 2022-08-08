@@ -27,7 +27,7 @@ workflows:
           requires:
             - set-shas-integration-test
             - orb-tools/pack
-            - command-tests
+            # - command-tests
           context: orb-publishing
           filters:
             branches:
