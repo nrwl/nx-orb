@@ -40,7 +40,7 @@ WARNING: Unable to find a successful workflow run on 'origin/${mainBranchName}'.
 We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
 
 NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
-        BASE_SHA = execSync(`git rev-parse HEAD~1`, { encoding: 'utf-8' });
+        BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
       }
     } else {
       process.stdout.write(`
