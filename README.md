@@ -5,7 +5,6 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 
 [![CircleCI Build Status](https://circleci.com/gh/nrwl/nx-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/nrwl/nx-orb) [![CircleCI Orb Version](https://badges.circleci.com/orbs/nrwl/nx.svg)](https://circleci.com/orbs/registry/orb/nrwl/nx) [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/nrwl/nx-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
-
 > ✨ A CircleCI Orb which includes helpful commands for running Nx commands in the CI
 
 ## Usage
