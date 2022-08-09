@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## [Unreleased]
- - Current development changes [ to be moved to release ] -->
+## [Unreleased]
+ - **[fix]**: Use explicitly main branch's previous commit when last successful sha was not found
+ - **[fix]**: Use CircleCI internal env var to check if run is pull request
+ - **[feat]**: Optionally disable filtering the past workflow runs by branch
+
+## [1.5.1] - 2022-06-27
+ - **[fix]**: Build url regex broken for pipeline ids < 10
 
 ## [1.5.0] - 2022-05-27
  - **[feat]**: Support CircleCI Enterprise setups
