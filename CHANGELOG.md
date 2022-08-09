@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.6.0] - 2022-08-09
  - **[fix]**: Use explicitly main branch's previous commit when last successful sha was not found
  - **[fix]**: Use CircleCI internal env var to check if run is pull request
- - **[feat]**: Optionally disable filtering the past workflow runs by branch
+ - **[feat]**: Optionally disable filtering the past workflow runs by branch 
 
 ## [1.5.1] - 2022-06-27
  - **[fix]**: Build url regex broken for pipeline ids < 10

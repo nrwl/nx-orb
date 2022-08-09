@@ -14,7 +14,7 @@ width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 version: 2.1
 
 orbs:
-  nx: nrwl/nx@1.5.1
+  nx: nrwl/nx@1.6.0
 
 jobs:
   checks:

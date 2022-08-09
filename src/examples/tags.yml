@@ -1,5 +1,5 @@
 description: >
-  You can use `set-shas` without parameters using the default values provided. Check API for more information.
+  You can use `set-shas` also for non-push events, but you need to skip the branch check in that case.
 usage:
   version: 2.1
   orbs:
@@ -13,10 +13,20 @@ usage:
         - run:
             name: Install dependencies
             command: yarn install --frozen-lockfile
-        - nx/set-shas
+        - nx/set-shas:
+            skip-branch-filter: true
         - run:
             name: Run Builds
             command: yarn nx affected --target=build --base=$NX_BASE --parallel --max-parallel=3
         - run:
             name: Run Unit Tests
             command: yarn nx affected --target=test --base=$NX_BASE --parallel --max-parallel=2
+  workflows:
+    my-workflow:
+      jobs:
+        - build:
+            filters:
+              branches:
+                ignore: /.*/ # ignore any commit on any branch by default
+              tags:
+                only: /^v[0-9]+(\.[0-9]+)*$/ # only act on version tags

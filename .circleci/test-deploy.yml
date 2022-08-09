@@ -17,18 +17,18 @@ jobs:
           shell: "/bin/bash"
           command: |
             HEAD_SHA=$(git rev-parse HEAD)
-            if [[ -z "$CIRCLE_PULL_REQUEST" ]]; then
-              BASE_SHA=$(git merge-base origin/main HEAD)
-            else
+            if [[ $CIRCLE_BRANCH == "main" ]]; then
               BASE_SHA=$(git rev-parse origin/main~1)
+            else
+              BASE_SHA=$(git merge-base origin/main HEAD)
             fi
             echo "Comparing head: $NX_HEAD to $HEAD_SHA"
             echo "Comparing base: $NX_BASE to $BASE_SHA"
             if [[ $NX_HEAD == $HEAD_SHA && $NX_BASE == $BASE_SHA ]]; then
               echo "Test conditions met"
             else
-              echo "Exiting Job"
-              circleci-agent step halt
+              echo "Test conditions NOT met"
+              exit 5
             fi
 
 workflows:
