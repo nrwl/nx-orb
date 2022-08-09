@@ -17,6 +17,7 @@ let BASE_SHA;
 (async () => {
   if (branchName !== mainBranchName) {
     BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
+    process.stdout.write(`TODO: running merge-base on ${branchName} and ${mainBranchName} results in ${BASE_SHA}\n`);
   } else {
     try {
       BASE_SHA = await findSuccessfulCommit(skipBranchFilter ? mainBranchName : undefined, workflowName);
