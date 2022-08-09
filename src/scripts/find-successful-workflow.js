@@ -7,7 +7,8 @@ const branchName = process.argv[3];
 const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5] === '1';
 const allowOnHoldWorkflow = process.argv[6] === '1';
-const workflowName = process.argv[7];
+const skipBranchFilter = process.argv[7] === '1';
+const workflowName = process.argv[8];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
 const [, host, project] = buildUrl.match(/https?:\/\/([^\/]+)\/(.*)\/\d+/);
@@ -18,7 +19,7 @@ let BASE_SHA;
     BASE_SHA = execSync(`git merge-base origin/${mainBranchName} HEAD`, { encoding: 'utf-8' });
   } else {
     try {
-      BASE_SHA = await findSuccessfulCommit(mainBranchName, workflowName);
+      BASE_SHA = await findSuccessfulCommit(skipBranchFilter ? mainBranchName : undefined, workflowName);
     } catch (e) {
       process.stderr.write(e.message);
       process.exit(1);
@@ -52,13 +53,14 @@ Found the last successful workflow run on 'origin/${mainBranchName}'.\n\n`);
 })();
 
 async function findSuccessfulCommit(branch, workflowName) {
-  const url = `https://${host}/api/v2/project/${project}/pipeline?branch=${branch}`;
+  const url = `https://${host}/api/v2/project/${project}/pipeline?`;
+  const params = branch ? [`branch=${branch}`] : [];
   let nextPage;
   let foundSHA;
 
   do {
-    const fullUrl = nextPage ? `${url}&page-token=${nextPage}` : url;
-    const { next_page_token, sha } = await getJson(fullUrl)
+    const fullParams = params.concat(nextPage ? [`page=${nextPage}`] : []).join('&');
+    const { next_page_token, sha } = await getJson(`${url}${fullParams}`)
       .then(async ({ next_page_token, items }) => {
         const pipeline = await findSuccessfulPipeline(items, workflowName);
         return {

@@ -28,7 +28,7 @@ jobs:
               echo "Test conditions met"
             else
               echo "Exiting Job"
-              circleci-agent step halt
+              exit 5
             fi
 
 workflows:
