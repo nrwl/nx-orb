@@ -2,9 +2,6 @@ version: 2.1
 orbs:
   nx: nrwl/nx@dev:<<pipeline.git.revision>>
   orb-tools: circleci/orb-tools@11.1
-filters: &filters
-  tags:
-    only: /.*/
 jobs:
   set-shas-integration-test:
     docker:
@@ -34,11 +31,14 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
       - set-shas-integration-test:
-          filters: *filters
+          filters: &filters
+            tags:
+              ignore: /.*/
       - orb-tools/pack:
-          filters: *filters
+          filters: &filters
+            tags:
+              only: /.*/
       - orb-tools/publish:
           orb-name: nrwl/nx
           vcs-type: << pipeline.project.type >>
@@ -46,7 +46,6 @@ workflows:
           requires:
             - set-shas-integration-test
             - orb-tools/pack
-            # - command-tests
           context: orb-publishing
           filters:
             branches:
