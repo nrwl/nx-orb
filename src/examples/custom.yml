@@ -8,7 +8,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    nx: nrwl/nx@1.6.0
+    nx: nrwl/nx@1.6.1
   jobs:
     build:
       docker:

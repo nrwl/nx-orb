@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+ - **[fix]**: Use fallback on CirclCI API glitches
+ - **[fix]**: Fallback to main branch when CIRCLE_BRANCH is missing
+ - **[fix]**: Incorrect API page query param 
 
 ## [1.6.0] - 2022-08-09
  - **[fix]**: Use explicitly main branch's previous commit when last successful sha was not found
