@@ -22,7 +22,17 @@ let BASE_SHA;
       BASE_SHA = await findSuccessfulCommit(skipBranchFilter ? undefined : mainBranchName, workflowName);
     } catch (e) {
       process.stderr.write(e.message);
-      process.exit(1);
+      if (errorOnNoSuccessfulWorkflow) {
+        process.exit(1);
+      } else {
+        process.stdout.write(`
+WARNING: Accessing CircleCI API failed on 'origin/${mainBranchName}'.
+This might be a temporary issue with their API or a misconfiguration of the CIRCLE_API_TOKEN.
+We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
+
+NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
+        BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
+      }
     }
 
     if (!BASE_SHA) {
@@ -125,7 +135,8 @@ async function getJson(url) {
 
       res.on('end', () => {
         const response = Buffer.concat(data).toString();
-        resolve(JSON.parse(response));
+        const responseJSON = JSON.parse(response);
+        resolve(responseJSON);
       });
     }).on('error', error => reject(
       circleToken
