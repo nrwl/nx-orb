@@ -59,7 +59,7 @@ async function findSuccessfulCommit(branch, workflowName) {
   let foundSHA;
 
   do {
-    const fullParams = params.concat(nextPage ? [`page=${nextPage}`] : []).join('&');
+    const fullParams = params.concat(nextPage ? [`page-token=${nextPage}`] : []).join('&');
     const { next_page_token, sha } = await getJson(`${url}${fullParams}`)
       .then(async ({ next_page_token, items }) => {
         const pipeline = await findSuccessfulPipeline(items, workflowName);
