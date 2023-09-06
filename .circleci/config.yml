@@ -17,12 +17,13 @@ workflows:
           filters: *filters
       - orb-tools/review:
           filters: *filters
+          exclude: RC010 # This rule would force us to use snake case for command names
       - shellcheck/check:
           exclude: SC2148,SC2038,SC2086,SC2002,SC2016
           filters: *filters
       - orb-tools/publish:
-          orb-name: nrwl/nx
-          vcs-type: << pipeline.project.type >>
+          orb_name: nrwl/nx
+          vcs_type: << pipeline.project.type >>
           requires:
             [orb-tools/lint, orb-tools/review, orb-tools/pack, shellcheck/check]
           # Use a context to hold your publishing token.
@@ -30,7 +31,8 @@ workflows:
           filters: *filters
       # Triggers the next workflow in the Orb Development Kit.
       - orb-tools/continue:
-          pipeline-number: << pipeline.number >>
-          vcs-type: << pipeline.project.type >>
+          orb_name: nrwl/nx
+          pipeline_number: << pipeline.number >>
+          vcs_type: << pipeline.project.type >>
           requires: [orb-tools/publish]
           filters: *filters

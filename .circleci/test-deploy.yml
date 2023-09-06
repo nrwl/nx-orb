@@ -40,9 +40,9 @@ workflows:
             tags:
               only: /.*/
       - orb-tools/publish:
-          orb-name: nrwl/nx
-          vcs-type: << pipeline.project.type >>
-          pub-type: production
+          orb_name: nrwl/nx
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
           requires:
             - set-shas-integration-test
             - orb-tools/pack
