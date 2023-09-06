@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
   nx: nrwl/nx@dev:<<pipeline.git.revision>>
-  orb-tools: circleci/orb-tools@11.1
+  orb-tools: circleci/orb-tools@12
 jobs:
   set-shas-integration-test:
     docker:
-      - image: cimg/node:14.17
+      - image: cimg/node:18.17.1
     steps:
       - checkout
       - nx/set-shas
