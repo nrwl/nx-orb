@@ -46,7 +46,8 @@ workflows:
           requires:
             - set-shas-integration-test
             - orb-tools/pack
-          context: orb-publishing
+          context:
+            - orb-publishing-context
           filters:
             branches:
               ignore: /.*/
