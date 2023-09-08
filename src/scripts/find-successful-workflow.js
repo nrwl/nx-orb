@@ -135,8 +135,16 @@ async function getJson(url) {
 
       res.on('end', () => {
         const response = Buffer.concat(data).toString();
-        const responseJSON = JSON.parse(response);
-        resolve(responseJSON);
+        try {
+          const responseJSON = JSON.parse(response);
+          resolve(responseJSON);
+        } catch (e) {
+          if (response.includes('Project not found')) {
+            reject(new Error(`Error: Project not found.\nIf you are using a private repo, make sure the CIRCLE_API_TOKEN is set.\n\n${response}`));
+          } else {
+            reject(e)
+          }
+        }
       });
     }).on('error', error => reject(
       circleToken
