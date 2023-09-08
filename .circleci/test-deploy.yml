@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
   nx: nrwl/nx@dev:<<pipeline.git.revision>>
-  orb-tools: circleci/orb-tools@11.1
+  orb-tools: circleci/orb-tools@12
 jobs:
   set-shas-integration-test:
     docker:
-      - image: cimg/node:14.17
+      - image: cimg/node:18.17.1
     steps:
       - checkout
       - nx/set-shas
@@ -40,13 +40,14 @@ workflows:
             tags:
               only: /.*/
       - orb-tools/publish:
-          orb-name: nrwl/nx
-          vcs-type: << pipeline.project.type >>
-          pub-type: production
+          orb_name: nrwl/nx
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
           requires:
             - set-shas-integration-test
             - orb-tools/pack
-          context: orb-publishing
+          context:
+            - orb-publishing-context
           filters:
             branches:
               ignore: /.*/
