@@ -20,3 +20,4 @@ echo "export NX_BASE=\"$BASE_SHA\";" >>$BASH_ENV
 echo "export NX_HEAD=\"$HEAD_SHA\";" >>$BASH_ENV
 echo ""
 echo "NX_BASE and NX_HEAD environment variables have been set for the current Job"
+rm index.js
