@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
  - **[fix]**: Provide more information for private repos when missing access
+ - **[fix]**: set BASE to undefined if HEAD~1 does not exist
+  
 ## [1.6.1] - 2022-10-14
  - **[fix]**: Use fallback on CirclCI API glitches
  - **[fix]**: Fallback to main branch when CIRCLE_BRANCH is missing
