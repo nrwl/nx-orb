@@ -25,13 +25,28 @@ let BASE_SHA;
       if (errorOnNoSuccessfulWorkflow) {
         process.exit(1);
       } else {
-        process.stdout.write(`
-WARNING: Accessing CircleCI API failed on 'origin/${mainBranchName}'.
-This might be a temporary issue with their API or a misconfiguration of the CIRCLE_API_TOKEN.
-We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
-
-NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
-        BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
+        // Check if HEAD~1 exists, and if not, set BASE_SHA to the empty tree hash
+        try {
+          BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
+          process.stdout.write(`
+  WARNING: Accessing CircleCI API failed on 'origin/${mainBranchName}'.
+  This might be a temporary issue with their API or a misconfiguration of the CIRCLE_API_TOKEN.
+  We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
+  
+  NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
+        } catch {
+          process.stdout.write(
+            `HEAD~1 does not exist. We are therefore defaulting to use the empty git tree hash as BASE.\n`,
+          );
+          try {
+            BASE_SHA = execSync(`git hash-object -t tree /dev/null`, {
+              encoding: "utf-8",
+            });
+          } catch {
+            // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 is the expected result of hashing the empty tree
+            BASE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
+          }
+        }
       }
     }
 
@@ -46,12 +61,28 @@ NOTE: You can instead make this a hard error by settting 'error-on-no-successful
     - If no, then you might have changed your git history and those commits no longer exist.`);
         process.exit(1);
       } else {
-        process.stdout.write(`
-WARNING: Unable to find a successful workflow run on 'origin/${mainBranchName}'.
-We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
 
-NOTE: You can instead make this a hard error by settting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
-        BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
+        // Check if HEAD~1 exists, and if not, set BASE_SHA to the empty tree hash
+        try {
+          BASE_SHA = execSync(`git rev-parse origin/${mainBranchName}~1`, { encoding: 'utf-8' });
+          process.stdout.write(`
+            WARNING: Unable to find a successful workflow run on 'origin/${mainBranchName}'.
+            We are therefore defaulting to use HEAD~1 on 'origin/${mainBranchName}'.
+            
+            NOTE: You can instead make this a hard error by setting 'error-on-no-successful-workflow' on the step in your workflow.\n\n`);
+        } catch {
+          process.stdout.write(
+            `HEAD~1 does not exist. We are therefore defaulting to use the empty git tree hash as BASE.\n`,
+          );
+          try {
+            BASE_SHA = execSync(`git hash-object -t tree /dev/null`, {
+              encoding: "utf-8",
+            });
+          } catch {
+            // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 is the expected result of hashing the empty tree
+            BASE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
+          }
+        }
       }
     } else {
       process.stdout.write(`
