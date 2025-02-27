@@ -43,6 +43,7 @@ workflows:
           orb_name: nrwl/nx
           vcs_type: << pipeline.project.type >>
           pub_type: production
+          enable_pr_comment: false
           requires:
             - set-shas-integration-test
             - orb-tools/pack

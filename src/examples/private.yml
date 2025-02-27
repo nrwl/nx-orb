@@ -7,4 +7,4 @@ description: >
 usage:
   version: 2.1
   orbs:
-    nx: nrwl/nx@1.7.2
+    nx: nrwl/nx@1.7.0

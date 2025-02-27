@@ -24,6 +24,7 @@ workflows:
       - orb-tools/publish:
           orb_name: nrwl/nx
           vcs_type: << pipeline.project.type >>
+          enable_pr_comment: false
           requires:
             - orb-tools/lint
             - orb-tools/review

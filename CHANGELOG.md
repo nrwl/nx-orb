@@ -5,7 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+ - **[fix]**: Delete generated script file on Orb run
+ - **[feat]**: set BASE to empty tree if HEAD~1 does not exist
+
+## [1.6.2] - 2023-09-11
  - **[fix]**: Provide more information for private repos when missing access
+ - **[chore]**: Update tooling for orbs 
+  
 ## [1.6.1] - 2022-10-14
  - **[fix]**: Use fallback on CirclCI API glitches
  - **[fix]**: Fallback to main branch when CIRCLE_BRANCH is missing
