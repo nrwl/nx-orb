@@ -7,9 +7,9 @@ const branchName = process.argv[3];
 const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5] === '1';
 const allowOnHoldWorkflow = process.argv[6] === '1';
-const skipBranchFilter = process.argv[7] === '1';
-const workflowName = process.argv[8];
-const allowNotRunWorkflow = process.argv[9] == '1';
+const allowNotRunWorkflow = process.argv[7] == '1';
+const skipBranchFilter = process.argv[8] === '1';
+const workflowName = process.argv[9];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
 const [, host, project] = buildUrl.match(/https?:\/\/([^\/]+)\/(.*)\/\d+/);
