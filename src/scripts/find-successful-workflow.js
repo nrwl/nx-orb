@@ -145,9 +145,9 @@ async function isWorkflowSuccessful(pipelineId, workflowName) {
     ).then(({ items }) =>
       items.every(
         (item) =>
-          item.status === "success" ||
-          (allowOnHoldWorkflow && item.status === "on_hold") ||
-          (allowNotRunWorkflow && item.status === "not_run")
+          item.status === 'success' ||
+          (allowOnHoldWorkflow && item.status === 'on_hold') ||
+          (allowNotRunWorkflow && item.status === 'not_run')
       )
     );
   } else {
@@ -156,9 +156,9 @@ async function isWorkflowSuccessful(pipelineId, workflowName) {
     ).then(({ items }) =>
       items.some(
         (item) =>
-          (item.status === "success" ||
-            (allowOnHoldWorkflow && item.status === "on_hold") ||
-            (allowNotRunWorkflow && item.status === "not_run")) &&
+          (item.status === 'success' ||
+            (allowOnHoldWorkflow && item.status === 'on_hold') ||
+            (allowNotRunWorkflow && item.status === 'not_run')) &&
           item.name === workflowName
       )
     );
