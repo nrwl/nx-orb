@@ -25,6 +25,12 @@ parameters:
     description: |
       By default, only workflows with CircleCI status of "success" will be detected for the main branch.
       Enable this option to also detect workflows with CircleCI status of "on_hold" in case your workflow requires manual approvals.
+  allow-not-run-workflow:
+    type: boolean
+    default: false
+    description: |
+      By default, only workflows with CircleCI status of "success" will be detected for the main branch.
+      Enable this option to also detect workflows with CircleCI status of "not_run" in case your workflow requires manual approvals.
   skip-branch-filter:
     type: boolean
     default: false
@@ -39,6 +45,7 @@ steps:
         PARAM_ERROR_ON_NO_SUCCESSFUL_WORKFLOW: <<parameters.error-on-no-successful-workflow>>
         PARAM_WORKFLOW_NAME: <<parameters.workflow-name>>
         PARAM_ALLOW_ON_HOLD: <<parameters.allow-on-hold-workflow>>
+        PARAM_ALLOW_NOT_RUN: <<parameters.allow-not-run-workflow>>
         PARAM_SKIP_BRANCH_FILTER: <<parameters.skip-branch-filter>>
         PARAM_SCRIPT: <<include(scripts/find-successful-workflow.js)>>
       name: Derives SHAs for base and head for use in `nx affected` commands

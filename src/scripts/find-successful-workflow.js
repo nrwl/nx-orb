@@ -7,8 +7,9 @@ const branchName = process.argv[3];
 const mainBranchName = process.env.MAIN_BRANCH_NAME || process.argv[4];
 const errorOnNoSuccessfulWorkflow = process.argv[5] === '1';
 const allowOnHoldWorkflow = process.argv[6] === '1';
-const skipBranchFilter = process.argv[7] === '1';
-const workflowName = process.argv[8];
+const allowNotRunWorkflow = process.argv[7] == '1';
+const skipBranchFilter = process.argv[8] === '1';
+const workflowName = process.argv[9];
 const circleToken = process.env.CIRCLE_API_TOKEN;
 
 const [, host, project] = buildUrl.match(/https?:\/\/([^\/]+)\/(.*)\/\d+/);
@@ -139,11 +140,28 @@ function commitExists(commitSha) {
 
 async function isWorkflowSuccessful(pipelineId, workflowName) {
   if (!workflowName) {
-    return getJson(`https://${host}/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.every(item => (item.status === 'success') || (allowOnHoldWorkflow && item.status === 'on_hold')));
+    return getJson(
+      `https://${host}/api/v2/pipeline/${pipelineId}/workflow`
+    ).then(({ items }) =>
+      items.every(
+        (item) =>
+          item.status === 'success' ||
+          (allowOnHoldWorkflow && item.status === 'on_hold') ||
+          (allowNotRunWorkflow && item.status === 'not_run')
+      )
+    );
   } else {
-    return getJson(`https://${host}/api/v2/pipeline/${pipelineId}/workflow`)
-      .then(({ items }) => items.some(item => ((item.status === 'success') || (allowOnHoldWorkflow && item.status === 'on_hold')) && item.name === workflowName));
+    return getJson(
+      `https://${host}/api/v2/pipeline/${pipelineId}/workflow`
+    ).then(({ items }) =>
+      items.some(
+        (item) =>
+          (item.status === 'success' ||
+            (allowOnHoldWorkflow && item.status === 'on_hold') ||
+            (allowNotRunWorkflow && item.status === 'not_run')) &&
+          item.name === workflowName
+      )
+    );
   }
 }
 
