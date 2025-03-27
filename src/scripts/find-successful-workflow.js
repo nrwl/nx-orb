@@ -138,12 +138,28 @@ function commitExists(commitSha) {
   }
 }
 
+function extractLatestItemsForEachName(items) {
+  const groupedItemsByName = items.reduce((acc, item) => {
+    if (!acc[item.name]) {
+      acc[item.name] = [];
+    }
+    acc[item.name].push(item);
+    acc[item.name] = acc[item.name].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    return acc;
+  }, {});
+  return Object.values(groupedItemsByName).map(
+    (itemsPerName) => itemsPerName[0]
+  );
+}
+
 async function isWorkflowSuccessful(pipelineId, workflowName) {
   if (!workflowName) {
     return getJson(
       `https://${host}/api/v2/pipeline/${pipelineId}/workflow`
     ).then(({ items }) =>
-      items.every(
+      extractLatestItemsForEachName(items).every(
         (item) =>
           item.status === 'success' ||
           (allowOnHoldWorkflow && item.status === 'on_hold') ||
